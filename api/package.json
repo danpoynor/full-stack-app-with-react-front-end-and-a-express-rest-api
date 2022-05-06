@@ -1,0 +1,36 @@
+{
+  "name": "school-admin-sql-rest-api",
+  "version": "0.1.0",
+  "description": "Demo REST API developed using Node.js, Express, and Sequelize provides a way to administer a school database containing information about users and courses.",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon ./app.js",
+    "seed": "cross-env DB_ENABLE_LOGGING=true node './seed'"
+  },
+  "keywords": [
+    "javascript",
+    "express",
+    "orm",
+    "database",
+    "sqlite",
+    "sequelize",
+    "node-js"
+  ],
+  "author": "Dan Poynor <danpoynor@gmail.com>",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  },
+  "dependencies": {
+    "basic-auth": "^2.0.1",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "cross-env": "^7.0.2",
+    "express": "^4.17.1",
+    "morgan": "^1.10.0",
+    "promise.prototype.finally": "^3.1.2",
+    "sequelize": "^6.19.0",
+    "sequelize-cli": "^6.4.1",
+    "sqlite3": "^5.0.0"
+  }
+}

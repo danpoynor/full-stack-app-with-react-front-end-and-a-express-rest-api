@@ -1,0 +1,101 @@
+/* Alert colors */
+:root {
+  --alert-danger-bg-color: #f8d7da;
+  --alert-danger-border-color: #f5c2c7;
+  --alert-danger-color: #842029;
+  --alert-info-bg-color: #cfe2ff;
+  --alert-info-border-color: #b6d4fe;
+  --alert-info-color: #084298;
+  --alert-success-bg-color: #d1e7dd;
+  --alert-success-border-color: #badbcc;
+  --alert-success-color: #0f5132;
+  --alert-warning-bg-color: #fff3cd;
+  --alert-warning-border-color: #ffecb5;
+  --alert-warning-color: #664d03;
+}
+
+.alert-banner {
+  background-color: var(--alert-info-bg-color);
+  border-radius: 0 0 .5rem .5rem;
+  border: 1px solid var(--alert-info-border-color);
+  color: var(--alert-info-color);
+  left: 50%;
+  min-width: 320px;
+  max-width: calc(100% - 4rem);
+  padding: 1.75rem 2.5rem 1rem .75rem;
+  position: absolute;
+  top: 0;
+  transform: translateX(-50%);
+}
+
+.alert-banner p {
+  margin: 0 0 1rem;
+}
+
+.alert-banner .btn-close {
+  align-items: center;
+  background-color: #fff;
+  border-radius: 50%;
+  border: 1px solid #7c689b;
+  color: #7c689b;
+  cursor: pointer;
+  display: flex;
+  font-size: 1.25rem;
+  font-weight: 400;
+  height: 1.25rem;
+  justify-content: center;
+  padding: 0;
+  position: absolute;
+  right: .5rem;
+  top: .5rem;
+  width: 1.25rem;
+}
+
+.alert-success {
+  background-color: var(--alert-success-bg-color);
+  border-color: var(--alert-success-border-color);
+  color: var(--alert-success-color);
+}
+
+.alert-warning {
+  background-color: var(--alert-warning-bg-color);
+  border-color: var(--alert-warning-border-color);
+  color: var(--alert-warning-color);
+}
+
+.alert-danger {
+  background-color: var(--alert-danger-bg-color);
+  border-color: var(--alert-danger-border-color);
+  color: var(--alert-danger-color);
+}
+
+/* Animate banner sliding in when shown */
+.alert-banner.slide-down-from-top-center {
+  animation: slideIn .5s ease;
+  animation-fill-mode: forwards;
+}
+
+.alert-banner.dismissed {
+  animation: slideOut .5s ease-out;
+  animation-fill-mode: forwards;
+}
+
+@keyframes slideIn {
+  0% {
+    transform: translate(-50%, -50%);
+  }
+  100% {
+    transform: translate(-50%, 0);
+  }
+}
+
+@keyframes slideOut {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -100%);
+  }
+}

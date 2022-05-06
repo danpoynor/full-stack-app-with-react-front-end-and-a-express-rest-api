@@ -1,0 +1,29 @@
+.course-detail-title {
+  padding-bottom: .25rem;
+  border-bottom: 1px solid #888;
+  margin: 3rem 0 .5rem;
+  font-size: .9rem;
+  color: #555;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.course-name {
+  font-size: 2rem;
+  margin-bottom: .5rem;
+  font-weight: 700;
+  color: #47395e;
+}
+
+.main-flex ul {
+  font-weight: 300;
+  line-height: 1.5;
+  margin: 0;
+  padding: 0 0 0 1rem;
+}
+
+@media screen and (min-width: 800px) {
+  .course-detail-title {
+    margin: 1.5rem 0 .5rem;
+  }
+}

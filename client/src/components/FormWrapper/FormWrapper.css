@@ -1,0 +1,36 @@
+.form-centered {
+  margin: 0 auto;
+  max-width: 510px;
+  padding: 0 1rem;
+}
+
+form {
+  margin-bottom: 2.5rem;
+}
+
+label {
+  display: block;
+  font-weight: 300;
+  margin-bottom: .25rem;
+}
+
+input, textarea {
+  border-radius: .5rem;
+  border: 1px solid #8c789b;
+  color: #332a40;
+  display: block;
+  font-family: Work Sans, sans-serif;
+  font-size: .8rem;
+  margin-bottom: 1rem;
+  padding: .5rem;
+  width: 100%;
+}
+
+textarea {
+  min-height: 300px;
+}
+
+input:focus,
+textarea:focus {
+  outline: 2px solid #332a40;
+}

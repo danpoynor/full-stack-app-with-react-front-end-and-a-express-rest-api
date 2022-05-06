@@ -1,0 +1,26 @@
+.validation-errors {
+  background: #e9e5f0;
+  padding: 1rem;
+  border-radius: .5rem;
+  margin-bottom: 2.5rem;
+}
+
+.validation-errors h3 {
+  color: #800;
+  font-size: 1.25rem;
+  margin: 0 0 .5rem;
+}
+
+.validation-errors ul {
+  font-weight: 300;
+  line-height: 1.25;
+  margin: 0;
+}
+
+.validation-errors li {
+  margin-bottom: .5rem;
+}
+
+.validation-errors li:last-child {
+  margin-bottom: 0;
+}

@@ -1,0 +1,1269 @@
+{
+	"info": {
+		"_postman_id": "47b9da08-d766-44d8-80b4-71785789faef",
+		"name": "FSJS Techdegree: REST API Project with Tests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "11521825"
+	},
+	"item": [
+		{
+			"name": "User Tests",
+			"item": [
+				{
+					"name": "Get Users (No Auth)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json();",
+									"",
+									"pm.test(\"Status code is `401 Unauthorized`\", () => {",
+									"    pm.response.to.have.status(401);",
+									"});",
+									"",
+									"pm.test(\"'Access Denied' message should be returned\", () => {",
+									"    pm.expect(jsonData.message).to.be.eql(\"Access Denied\")",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/api/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Users (With Auth)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json();",
+									"",
+									"pm.test(\"Status code is `200 OK`\", () => {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has a JSON body\", () => {",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
+									"pm.test(\"Response type should be a JSON `object`\", () => {",
+									"    pm.expect(jsonData).to.be.an(\"object\");",
+									"});",
+									"",
+									"pm.test(\"User 'id', 'firstName', 'lastName', 'email' is returned\", () => {",
+									"    pm.expect(jsonData.id).to.eql(1);",
+									"    pm.expect(jsonData.firstName).to.eql(\"Joe\");",
+									"    pm.expect(jsonData.lastName).to.eql(\"Smith\");",
+									"    pm.expect(jsonData.emailAddress).to.eql(\"joe@smith.com\");",
+									"});",
+									"",
+									"pm.test(\"User owned 'courses' array is returned\", () => {",
+									"    pm.expect(jsonData.courses).to.be.an(\"array\");",
+									"});",
+									"",
+									"pm.test(\"Courses length is 2\", () => {",
+									"    pm.expect(jsonData.courses.length).to.eql(2);",
+									"});",
+									"",
+									"pm.test(\"Response should not include 'password', 'confirmedPassword', 'createdAt', 'updatedAt'\", () => {",
+									"    pm.expect(typeof jsonData.password).to.eq('undefined');",
+									"    pm.expect(typeof jsonData.confirmedPassword).to.eq('undefined');",
+									"    pm.expect(typeof jsonData.createdAt).to.eq('undefined');",
+									"    pm.expect(typeof jsonData.updatedAt).to.eq('undefined');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "joepassword",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "joe@smith.com",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/api/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create User (with dynamic values)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is `201 Created`\", () => {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Response should contain no content\", () => {",
+									"    pm.expect(pm.response.responseSize).to.eql(0);",
+									"});",
+									"",
+									"pm.test(\"'Location' header is '/'\", () => {",
+									"    pm.expect(pm.response.headers.get('Location')).to.eql('/signin');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Create a variable to store $randomPassword so it can",
+									"// be used twice - as 'password' and 'confirmedPassword'",
+									"const staticRandomPassword = pm.variables.replaceIn(\"{{$randomPassword}}\")",
+									"pm.globals.set(\"staticRandomPassword\", staticRandomPassword)",
+									"console.log('staticRandomPassword', staticRandomPassword)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"firstName\": \"{{$randomFirstName}}\",\n  \"lastName\": \"{{$randomFirstName}}\",\n  \"userName\": \"{{$randomEmail}}\",\n  \"emailAddress\": \"{{$randomEmail}}\",\n  \"password\": \"{{staticRandomPassword}}\",\n  \"confirmedPassword\": \"{{staticRandomPassword}}\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create User (Passwords Must Match, with dynamic values)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json();",
+									"",
+									"pm.test(\"Status code is `400 Bad Request`\", () => {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Response has a JSON body\", () => {",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
+									"pm.test(\"One error message should be returned\", () => {",
+									"    pm.expect(jsonData.errors.length).to.eql(1);",
+									"});",
+									"",
+									"pm.test(\"'Both passwords must match' error message should be returned\", () => {",
+									"    pm.expect(jsonData.errors[0]).to.be.eql(\"Both passwords must match\")",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"firstName\": \"{{$randomFirstName}}\",\n  \"lastName\": \"{{$randomFirstName}}\",\n  \"userName\": \"{{$randomEmail}}\",\n  \"emailAddress\": \"{{$randomEmail}}\",\n  \"password\": \"{{$randomPassword}}\",\n  \"confirmedPassword\": \"{{$randomPassword}}\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create User (Existing Email Address)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json();",
+									"",
+									"pm.test(\"Status code is `400 Bad Request`\", () => {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Response has a JSON body\", () => {",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
+									"pm.test(\"'Email Address must be unique' error message should be returned\", () => {",
+									"    pm.expect(jsonData.errors[0]).to.be.eql(\"Email Address must be unique\")",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"firstName\": \"Joe\",\n  \"lastName\": \"Smith\",\n  \"userName\": \"joe@smith.com\",\n  \"emailAddress\": \"joe@smith.com\",\n  \"password\": \"password\",\n  \"confirmedPassword\": \"password\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create User (Existing Username)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json();",
+									"",
+									"pm.test(\"Status code is `400 Bad Request`\", () => {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Response has a JSON body\", () => {",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
+									"pm.test(\"'Username already exists' error message should be returned\", () => {",
+									"    pm.expect(jsonData.errors[0]).to.be.eql(\"Username already exists\")",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"firstName\": \"{{$randomFirstName}}\",\n  \"lastName\": \"{{$randomFirstName}}\",\n  \"userName\": \"joe@smith.com\",\n  \"emailAddress\": \"{{$randomEmail}}\",\n  \"password\": \"password\",\n  \"confirmedPassword\": \"password\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create User (Incomplete Data)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json();",
+									"",
+									"pm.test(\"Status code is `400 Bad Request`\", () => {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Response has a JSON body\", () => {",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
+									"pm.test(\"Seven error messages should be returned\", () => {",
+									"    pm.expect(jsonData.errors.length).to.eql(7);",
+									"});",
+									"",
+									"pm.test(\"'First Name value is required' error message should be returned\", () => {",
+									"    pm.expect(jsonData.errors[0]).to.be.eql(\"First Name value is required\")",
+									"});",
+									"",
+									"pm.test(\"'Last Name value is required' error message should be returned\", () => {",
+									"    pm.expect(jsonData.errors[1]).to.be.eql(\"Last Name value is required\")",
+									"});",
+									"",
+									"pm.test(\"'Username value is required' error message should be returned\", () => {",
+									"    pm.expect(jsonData.errors[2]).to.be.eql(\"Username value is required\")",
+									"});",
+									"",
+									"pm.test(\"'Email Address format is invalid' error message should be returned\", () => {",
+									"    pm.expect(jsonData.errors[3]).to.be.eql(\"Email Address format is invalid\")",
+									"});",
+									"",
+									"pm.test(\"'Email Address value is required' error message should be returned\", () => {",
+									"    pm.expect(jsonData.errors[4]).to.be.eql(\"Email Address value is required\")",
+									"});",
+									"",
+									"pm.test(\"'Password should be between 7 and 50 characters in length' error message should be returned\", () => {",
+									"    pm.expect(jsonData.errors[5]).to.be.eql(\"Password should be between 7 and 50 characters in length\")",
+									"});",
+									"",
+									"pm.test(\"'Password value is required' error message should be returned\", () => {",
+									"    pm.expect(jsonData.errors[6]).to.be.eql(\"Password value is required\")",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"firstName\": \"\",\n  \"lastName\": \"\",\n  \"userName\": \"\",\n  \"emailAddress\": \"\",\n  \"password\": \"\",\n  \"confirmedPassword\": \"\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create User (Invalid Email Address Format)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json();",
+									"",
+									"pm.test(\"Status code is `400 Bad Request`\", () => {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Response has a JSON body\", () => {",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
+									"pm.test(\"One error message should be returned\", () => {",
+									"    pm.expect(jsonData.errors.length).to.eql(1);",
+									"});",
+									"",
+									"pm.test(\"'Email Address format is invalid' error message should be returned\", () => {",
+									"    pm.expect(jsonData.errors[0]).to.be.eql(\"Email Address format is invalid\")",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"firstName\": \"Sam\",\n  \"lastName\": \"Smith\",\n  \"userName\": \"samapple@sam.com\",\n  \"emailAddress\": \"sam.com\",\n  \"password\": \"password\",\n  \"confirmedPassword\": \"password\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"users"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Course Tests",
+			"item": [
+				{
+					"name": "Get Courses",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json();",
+									"",
+									"pm.test(\"Status code is `200 OK`\", () => {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has a JSON body\", () => {",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
+									"pm.test(\"Response type should be an array\", () => {",
+									"    pm.expect(jsonData).to.be.an(\"array\");",
+									"});",
+									"",
+									"pm.test(\"Should return more than 1 classes\", () => {",
+									"    pm.expect(jsonData.length).to.be.greaterThan(1)",
+									"});",
+									"",
+									"pm.test(\"Should contain correct titles\", () => {",
+									"    const titles = jsonData.map((course) => course.title)",
+									"    pm.expect(titles).to.include(\"Build a Basic Bookcase\");",
+									"    pm.expect(titles).to.include(\"Learn How to Program\");",
+									"    pm.expect(titles).to.include(\"Learn How to Test Programs\");",
+									"    pm.expect(titles).to.include(\"Debugging 101\");",
+									"});",
+									"",
+									"pm.test(\"Course owners `firstName` and `lastName` should be included with each course\"), () => {",
+									"    jsonData.forEach(course => {",
+									"        pm.expect(course.User.firstName).to.not.be.null;",
+									"        pm.expect(course.User.lastName).to.not.be.null;",
+									"    })",
+									"}",
+									"",
+									"pm.test(\"Response should not include 'createdAt', 'updatedAt'\", () => {",
+									"    pm.expect(typeof jsonData.createdAt).to.eq('undefined');",
+									"    pm.expect(typeof jsonData.updatedAt).to.eq('undefined');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "localhost:5000/api/courses",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"courses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Course",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json();",
+									"",
+									"pm.test(\"Status code is `200 OK`\", () => {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has a JSON body\", () => {",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
+									"pm.test(\"Response type should be an object\", () => {",
+									"    pm.expect(jsonData).to.be.an(\"object\");",
+									"});",
+									"",
+									"pm.test(\"'title' value should be 'Build a Basic Bookcase'\", () => {",
+									"    pm.expect(jsonData.title).to.eql(\"Build a Basic Bookcase\");",
+									"});",
+									"",
+									"pm.test(\"'estimatedHours' value should be '12 hours'\", () => {",
+									"    pm.expect(jsonData.estimatedTime).to.eql(\"12 hours\");",
+									"});",
+									"",
+									"pm.test(\"Course owners `firstName` and `lastName` should be included\"), () => {",
+									"    pm.expect(jsonData.User.firstName).to.not.be.null;",
+									"    pm.expect(jsonData.User.lastName).to.not.be.null;",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "localhost:5000/api/courses/1",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"courses",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Course (Min Data, with dynamic title)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is `201 Created`\", () => {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Response should contain no content\", () => {",
+									"    pm.expect(pm.response.responseSize).to.eql(0);",
+									"});",
+									"",
+									"pm.test(\"'Location' header ends with an `:id` type `number`\", () => {",
+									"    const newCourseId = /[0-9]+$/.test(pm.response.headers.get('Location'))",
+									"    pm.expect(newCourseId).to.be.true;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "joepassword",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "joe@smith.com",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"New {{$randomBsNoun}} Course \",\n    \"description\": \"My course description\",\n    \"userId\": 1\n}"
+						},
+						"url": {
+							"raw": "localhost:5000/api/courses",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"courses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Course (Min Data)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is `204 No Content`\", () => {",
+									"    pm.response.to.have.status(204);",
+									"});",
+									"",
+									"pm.test(\"Response should contain no content\", () => {",
+									"    pm.expect(pm.response.responseSize).to.eql(0);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "joepassword",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "joe@smith.com",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"id\": 1,\n    \"title\": \"New Course Updated Again Hello\",\n    \"description\": \"My course description. And again.\",\n    \"userId\": 1\n}"
+						},
+						"url": {
+							"raw": "localhost:5000/api/courses/1",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"courses",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Course (With Auth)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is `204 No Content`\", () => {",
+									"    pm.response.to.have.status(204);",
+									"});",
+									"",
+									"pm.test(\"Response should contain no content\", () => {",
+									"    pm.expect(pm.response.responseSize).to.eql(0);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "joepassword",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "joe@smith.com",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "localhost:5000/api/courses/4",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"courses",
+								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Course (Not Owner)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json();",
+									"",
+									"pm.test(\"Status code is `403 Forbidden`\", () => {",
+									"    pm.response.to.have.status(403);",
+									"});",
+									"",
+									"pm.test(\"Response has a JSON body\", () => {",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
+									"pm.test(\"'You are not the owner' message should be returned\", () => {",
+									"    pm.expect(jsonData.message).to.be.eql(\"Access Denied. You are not the owner of this course.\")",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "joepassword",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "joe@smith.com",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"id\": 3,\n    \"title\": \"New Course Updated Again Hello\",\n    \"description\": \"My course description. And again.\",\n    \"userId\": 1\n}"
+						},
+						"url": {
+							"raw": "localhost:5000/api/courses/3",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"courses",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Course (Not Owner)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json();",
+									"",
+									"pm.test(\"Status code is `403 Forbidden`\", () => {",
+									"    pm.response.to.have.status(403);",
+									"});",
+									"",
+									"pm.test(\"Response has a JSON body\", () => {",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
+									"pm.test(\"'You are not the owner' message should be returned\", () => {",
+									"    pm.expect(jsonData.message).to.be.eql(\"Access Denied. You are not the owner of this course.\")",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "joepassword",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "joe@smith.com",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "localhost:5000/api/courses/3",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"courses",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Course (Incomplete Data)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json();",
+									"",
+									"pm.test(\"Status code is `400 Bad Request`\", () => {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Response has a JSON body\", () => {",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
+									"pm.test(\"Two error messages should be returned\", () => {",
+									"    pm.expect(jsonData.errors.length).to.eql(2);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "joepassword",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "joe@smith.com",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{}"
+						},
+						"url": {
+							"raw": "localhost:5000/api/courses",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"courses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Course (Incomplete Data)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json();",
+									"",
+									"pm.test(\"Status code is `400 Bad Request`\", () => {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Response has a JSON body\", () => {",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
+									"pm.test(\"Two error messages should be returned\", () => {",
+									"    pm.expect(jsonData.errors.length).to.eql(2);",
+									"});",
+									"",
+									"pm.test(\"'Title is required.' error message should be returned\", () => {",
+									"    pm.expect(jsonData.errors[0]).to.be.eql(\"Title is required.\")",
+									"});",
+									"",
+									"pm.test(\"'Description is required.' error message should be returned\", () => {",
+									"    pm.expect(jsonData.errors[1]).to.be.eql(\"Description is required.\")",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "joepassword",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "joe@smith.com",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"userId\": 1,\n\t\"title\": \"\",\n    \"description\": \"\"\n}"
+						},
+						"url": {
+							"raw": "localhost:5000/api/courses/1",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"courses",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Course (No Auth, Incomplete Data)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json();",
+									"",
+									"pm.test(\"Status code is `401 Unauthorized`\", () => {",
+									"    pm.response.to.have.status(401);",
+									"});",
+									"",
+									"pm.test(\"'Access Denied' message should be returned\", () => {",
+									"    pm.expect(jsonData.message).to.be.eql(\"Access Denied\")",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{}"
+						},
+						"url": {
+							"raw": "localhost:5000/api/courses",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"courses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Course (No Auth, Incomplete Data) XXX",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json();",
+									"",
+									"pm.test(\"Status code is `401 Unauthorized`\", () => {",
+									"    pm.response.to.have.status(401);",
+									"});",
+									"",
+									"pm.test(\"'Access Denied' message should be returned\", () => {",
+									"    pm.expect(jsonData.message).to.be.eql(\"Access Denied\")",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{}"
+						},
+						"url": {
+							"raw": "localhost:5000/api/courses/1",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"courses",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Course (No Auth)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json();",
+									"",
+									"pm.test(\"Status code is `401 Unauthorized`\", () => {",
+									"    pm.response.to.have.status(401);",
+									"});",
+									"",
+									"pm.test(\"'Access Denied' message should be returned\", () => {",
+									"    pm.expect(jsonData.message).to.be.eql(\"Access Denied\")",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "localhost:5000/api/courses/1",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"courses",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

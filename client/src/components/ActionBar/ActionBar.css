@@ -1,0 +1,13 @@
+.action-bar {
+  background: #e9e5f0;
+  padding: 1rem 0;
+  margin: -2rem 0 2rem;
+}
+
+.action-bar a {
+  display: inline-block;
+}
+
+.action-bar a:not(:last-child) {
+  margin-right: .5rem;
+}

@@ -1,0 +1,32 @@
+header {
+  background: #57496e;
+  color: #fff;
+  padding: 1rem 0;
+  margin-bottom: 2rem;
+}
+
+header .wrap {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
+header a {
+  color: #dbd;
+}
+
+header a:hover {
+  color: #fff;
+}
+
+header h1 {
+  font-size: 1.5rem;
+  font-weight: 400;
+  margin: 0;
+  color: #fff;
+}
+
+header nav {
+  display: flex;
+  gap: 1rem;
+}
