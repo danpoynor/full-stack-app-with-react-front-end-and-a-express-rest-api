@@ -19,7 +19,7 @@
   "author": "Dan Poynor <danpoynor@gmail.com>",
   "license": "ISC",
   "devDependencies": {
-    "nodemon": "^2.0.15"
+    "nodemon": "^2.0.20"
   },
   "dependencies": {
     "basic-auth": "^2.0.1",
